@@ -286,6 +286,11 @@
 268. 用户贡献条目、积分、云贝数量
 269. 年度听歌报告
 270. 播客声音搜索
+271. 播客声音排序
+272. 播客列表详情
+273. 本地歌曲文件匹配网易云歌曲信息
+274. 歌曲音质详情
+275. 歌曲红心数量
 
 ## 安装
 
@@ -2263,6 +2268,7 @@ crbt: Option<String>, None或字符串表示的十六进制，功能未知
 cf: Option<String>, 空白字串或者None，功能未知
 al: Album, 专辑，如果是DJ节目(dj_type != 0)或者无专辑信息(single == 1)，则专辑id为0
 dt: u64, 歌曲时长
+hr: Option<Quality>, Hi-Res质量文件信息
 sq: Option<Quality>, 无损质量文件信息
 h: Option<Quality>, 高质量文件信息
 m: Option<Quality>, 中质量文件信息
@@ -4294,6 +4300,30 @@ ONLINE 已发布
 同上
 ```
 
+### 播客声音排序
+
+说明: 调整声音在列表中的顺序, 每个声音都有固定的序号, 例如将4的声音移动到1后, 原来的1、2、3增加为2、3、4, 其他不变
+
+**接口地址:** `/voicelist/trans`
+
+**必选参数：** 
+
+`position`: 位置, 最小为1, 最大为歌曲数量, 超过最大则为移动到最底, 小于1报错
+
+`programId`: 播客声音id, 即voiceId
+
+`radioId`: 电台id, 即voiceListId
+
+### 播客列表详情
+
+说明: 可以获取播客封面、分类、名称、简介等
+
+**接口地址:** `/voicelist/detail`
+
+**必选参数：** 
+
+`id`: 播客id，即voiceListId
+
 ### 播客上传声音
 说明: 可以上传声音到播客,例子在 `/public/voice_upload.html` 访问地址: <a href="/voice_upload.html" target="_blank">/voice_upload.html</a>
 
@@ -4475,7 +4505,7 @@ qrCodeStatus:20,detailReason:0  验证成功qrCodeStatus:21,detailReason:0 二�
 **调用例子:** `/ugc/user/devote`
 
 ### 年度听歌报告
-说明: 登录后调用此接口,使用此接口,可获取当前登录用户年度听歌报告，目前支持2017-2022年的报告
+说明: 登录后调用此接口,使用此接口,可获取当前登录用户年度听歌报告，目前支持2017-2023年的报告
 
 **必选参数：**  
 
@@ -4483,7 +4513,59 @@ qrCodeStatus:20,detailReason:0  验证成功qrCodeStatus:21,detailReason:0 二�
 
 **接口地址:** `/summary/annual`
 
-**调用例子:** `/summary/annual?year=2022`
+**调用例子:** `/summary/annual?year=2023`
+
+### 本地歌曲文件匹配网易云歌曲信息
+
+说明: 调用此接口可以为本地歌曲文件搜索匹配歌曲ID、专辑封面等信息
+
+**必选参数：**     
+
+`title`: 文件的标题信息，是文件属性里的标题属性，并非文件名
+
+`album`: 文件的专辑信息
+
+`artist`: 文件的艺术家信息
+
+`duration`: 文件的时长，单位为秒
+
+`md5`: 文件的md5
+
+**接口地址:** `/search/match`
+
+**调用例子:** `/search/match?title=富士山下&album=&artist=陈奕迅&duration=259.21&md5=bd708d006912a09d827f02e754cf8e56`
+
+### 歌曲音质详情
+
+说明: 调用此接口获取歌曲各个音质的文件信息，与 `获取歌曲详情` 接口相比，多出 `高清环绕声`、`沉浸环绕声`、`超清母带`等音质的信息
+
+**必选参数：**     
+
+`id`: 歌曲id
+
+**接口地址:** `song/music/detail`
+
+**调用例子:** `song/music/detail?id=2082700997`
+
+返回字段说明 :
+```
+"br": 比特率Bit Rate,
+"size": 文件大小,
+"vd": Volume Delta,
+"sr": 采样率Sample Rate
+```
+
+### 歌曲红心数量
+
+说明: 调用此接口获取歌曲的红心用户数量
+
+**必选参数：**     
+
+`id`: 歌曲id
+
+**接口地址:** `/song/red/count`
+
+**调用例子:** `/song/red/count?id=186016`
 
 ## 离线访问此文档
 
